@@ -1,16 +1,21 @@
 ﻿using System;
 using System.Windows;
+using System.ComponentModel;
+using System.Collections.ObjectModel;
 using GEO_Json_to_MySQL_Converter.Utils;
+using GEO_Json_to_MySQL_Converter.Models;
 
 namespace GEO_Json_to_MySQL_Converter.ViewModels
 {
+    
     public class MainViewModel : BusyViewModel
     {
         private RelayCommand openFileCommand;
+        public ObservableCollection<LogNode> Log { get; set; }
 
         public MainViewModel()
-        { 
-
+        {
+            Log = new ObservableCollection<LogNode>();
         }
 
         public RelayCommand OpenFileCommand => openFileCommand ??
@@ -21,16 +26,24 @@ namespace GEO_Json_to_MySQL_Converter.ViewModels
                           OnBusy("Waiting ...");
                           RequestWindows.RequestFile(out string file);
                           RequestWindows.RequestQuestion("Создать новую базу данных ?", out bool isNewDB);
-                          RequestWindows.RequestQuestion("Начать считывание файла с первой строки?", out bool isNewAttempt);
-                          if (isNewDB==true)
+                          string pathDB;
+                          if (isNewDB)
                           {
-                              RequestWindows.RequestNewDB("Выбор БД", "db files (*.db)|*.db", out string pathDB);
-                              СontinueDesirialaseFile(file, pathDB, isNewAttempt);
+                              RequestWindows.RequestOpenNewDB("Выбор новой БД", "db files (*.db)|*.db", out pathDB);
                           }
                           else
                           {
-                              RequestWindows.RequestFile(out string pathDB);
-                              DesirialaseFile(file, pathDB, isNewAttempt);
+                              RequestWindows.RequestOpenDB("db files (*.db)|*.db", out pathDB);
+                          }
+                          RequestWindows.RequestQuestion("Начать считывание файла с первой строки?", out bool isNewAttempt);
+                          if (isNewAttempt)
+                          {
+                              СontinueDesirialaseFile(file, pathDB, Log);
+                          }
+                          else
+                          {
+                              
+                              DesirialaseFile(file, pathDB, Log);
                           }
                       }
                       catch (Exception ex)

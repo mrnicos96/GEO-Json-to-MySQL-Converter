@@ -22,11 +22,22 @@ namespace GEO_Json_to_MySQL_Converter.Utils
                 MessageBoxImage.Question, MessageBoxResult.Yes) == MessageBoxResult.Yes;
         }
 
-        public static bool RequestNewDB(string title, string type, out string fileName)
+        public static bool RequestOpenNewDB(string title, string type, out string fileName)
         {
             var dialog = new Microsoft.Win32.SaveFileDialog { Title = title, Filter = type };
             var result = dialog.ShowDialog();
             if (result.HasValue && result.Value)
+                fileName = dialog.FileName;
+            else
+                fileName = String.Empty;
+            return result.Value;
+        }
+
+        public static bool RequestOpenDB(string filter, out string fileName)
+        {
+            var dialog = new Microsoft.Win32.OpenFileDialog { Filter = filter, FilterIndex = 2, RestoreDirectory = true };
+            bool? result = dialog.ShowDialog();
+            if (result == true)
                 fileName = dialog.FileName;
             else
                 fileName = String.Empty;
