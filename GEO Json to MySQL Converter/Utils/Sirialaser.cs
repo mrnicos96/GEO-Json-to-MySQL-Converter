@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using GEO_Json_to_MySQL_Converter.Utils;
+using Microsoft.Data.Sqlite;
 
 namespace GEO_Json_to_MySQL_Converter.Models
 {
@@ -18,8 +19,8 @@ namespace GEO_Json_to_MySQL_Converter.Models
             if (CheakFile(file, out string correctFile))
                 return;
             ReadData(correctFile, out string data);
-            ServiceDB.ConectToDB(pathDB);
-
+            var connection = new SqliteConnection(pathDB);
+            connection.Open();
             int Index;
             string name;
             string coordinateString;
@@ -40,26 +41,18 @@ namespace GEO_Json_to_MySQL_Converter.Models
                 Index = coordinateString.IndexOf("]]]]}");
                 coordinateString = coordinateString.Remove(Index);
                 coordinateString = coordinateString.Replace("]]],[[[", "],[");
-                coordinateString = coordinateString.Replace("]]],[[[", ",");
+                coordinateString = coordinateString.Replace("],[", ",");
                 arrayCoordinates = coordinateString.Split(',');
 
                 //object lastItem = arrayCoordinates.GetValue(arrayCoordinates.Length-1);
 
                 foreach (var coordinate in arrayCoordinates)
                 {
-                    item.Name = name;
                     Index = coordinate.IndexOf(",");
-                    item.Longitude = coordinate.Substring(0, Index);
-                    item.Latitude = coordinate.Substring(Index - 1);
-                    List.Insert(0, item);
                 }
 
                 Index = data.IndexOf("]]]]}");
-                data = data[(Index + 5)..];
-
-                ListN itemN = new ListN();
-                itemN.List = List;
-                ListColl.Insert(0, itemN);
+                data = data.Substring(Index + 5);
             }
         }
         private bool CheakFile (string file, out string correctFile)

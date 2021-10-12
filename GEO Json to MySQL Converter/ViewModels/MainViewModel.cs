@@ -25,7 +25,7 @@ namespace GEO_Json_to_MySQL_Converter.ViewModels
                       {
                           OnBusy("Waiting ...");
                           RequestWindows.RequestFile(out string file);
-                          RequestWindows.RequestQuestion("Создать новую базу данных ?", out bool isNewDB);
+                          RequestWindows.RequestQuestion("Создать новую базу данных для сохранения даных ?", out bool isNewDB);
                           string pathDB;
                           if (isNewDB)
                           {
@@ -35,15 +35,20 @@ namespace GEO_Json_to_MySQL_Converter.ViewModels
                           {
                               RequestWindows.RequestOpenDB("db files (*.db)|*.db", out pathDB);
                           }
+                          var requestTableName = RequestWindows.RequestInputText("GEO Json to MySQL Converter - Имя таблицы для добавления", 
+                              "Введите имя таблицы", "Регионы");
+                          if (requestTableName.Item1)
+                              return;
+                          string tableName = requestTableName.Item2;
                           RequestWindows.RequestQuestion("Начать считывание файла с первой строки?", out bool isNewAttempt);
                           if (isNewAttempt)
                           {
-                              СontinueDesirialaseFile(file, pathDB, Log);
+                              СontinueDesirialaseFile(file, pathDB, tableName, Log);
                           }
                           else
                           {
                               
-                              DesirialaseFile(file, pathDB, Log);
+                              DesirialaseFile(file, pathDB, tableName, Log);
                           }
                       }
                       catch (Exception ex)
