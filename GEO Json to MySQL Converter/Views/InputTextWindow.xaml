@@ -1,0 +1,28 @@
+﻿<Window x:Class="GEO_Json_to_MySQL_Converter.Views.InputTextWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:GEO_Json_to_MySQL_Converter.Views"
+        mc:Ignorable="d"
+        Title="{Binding Path=Title, Mode=OneWay}" Height="200" Width="250" >
+    <Grid>
+        <Grid.RowDefinitions>
+        <RowDefinition Height="*" />
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto" Margin="2">
+            <TextBlock Text="{Binding Path=Question, Mode=OneWay}" HorizontalAlignment="Center" TextWrapping="Wrap" />
+        </ScrollViewer>
+
+        <TextBox Text="{Binding Path=InputValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                 TextWrapping="Wrap" Grid.Row="1" />
+
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row="2">
+            <Button Content="Принять" IsDefault="True" Click="Apply_Click"/>
+            <Button Content="Отмена" IsCancel="True" />
+        </StackPanel>
+    </Grid>
+</Window>

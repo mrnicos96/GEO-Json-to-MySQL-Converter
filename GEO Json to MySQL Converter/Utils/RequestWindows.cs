@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Windows;
+using GEO_Json_to_MySQL_Converter.ViewModels;
+using GEO_Json_to_MySQL_Converter.Views;
 
 namespace GEO_Json_to_MySQL_Converter.Utils
 {
@@ -42,6 +44,25 @@ namespace GEO_Json_to_MySQL_Converter.Utils
             else
                 fileName = String.Empty;
             return result.Value;
+        }
+
+        public static Tuple<bool, string> RequestInputText(string title, string question, string defaultText)
+        {
+            var model = new InputTextViewModel
+            {
+                Title = title,
+                Question = question,
+                InputValue = defaultText
+            };
+
+            var result = new InputTextWindow
+            {
+                DataContext = model,
+                Owner = Application.Current.MainWindow,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
+            }.ShowDialog();
+
+            return Tuple.Create(result ?? false, model.InputValue);
         }
     }
 }
