@@ -136,7 +136,6 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Models\LogModel.cs" />
-    <Compile Include="Utils\ServiceDB.cs" />
     <Compile Include="Utils\Sirialaser.cs" />
     <Compile Include="Utils\RequestWindows.cs" />
     <Compile Include="ViewModels\BusyViewModel.cs" />

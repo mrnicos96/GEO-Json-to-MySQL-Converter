@@ -40,16 +40,7 @@ namespace GEO_Json_to_MySQL_Converter.ViewModels
                           if (requestTableName.Item1)
                               return;
                           string tableName = requestTableName.Item2;
-                          RequestWindows.RequestQuestion("Начать считывание файла с первой строки?", out bool isNewAttempt);
-                          if (isNewAttempt)
-                          {
-                              СontinueDesirialaseFile(file, pathDB, tableName, Log);
-                          }
-                          else
-                          {
-                              
-                              DesirialaseFile(file, pathDB, tableName, Log);
-                          }
+                          Sirialaser.DesirialaseFile(file, pathDB, tableName, Log);
                       }
                       catch (Exception ex)
                       {
