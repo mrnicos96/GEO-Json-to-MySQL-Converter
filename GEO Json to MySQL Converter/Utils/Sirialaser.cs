@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System;
 
 namespace GEO_Json_to_MySQL_Converter.Models
 {
@@ -13,6 +14,9 @@ namespace GEO_Json_to_MySQL_Converter.Models
             if (CheakFile(file, out string correctFile))
                 return;
             ReadData(correctFile, out string data);
+
+            GetQteStrings(data, Log, out int qteStrings);
+
             using (var connection = new SqliteConnection(pathDB))
             {
                 connection.Open();
@@ -29,9 +33,14 @@ namespace GEO_Json_to_MySQL_Converter.Models
                 string name;
                 string coordinateString;
                 string[] arrayCoordinates;
+                int stringNomber = 0;
+                var mesage = new LogNode();
+                int coordinateNomber = 0;
 
                 while (data.IndexOf("Feature") != -1)
                 {
+                    stringNomber++;
+
                     Index = data.IndexOf("osm_type");
                     name = data.Substring(Index);
                     Index = name.IndexOf("name");
@@ -50,8 +59,17 @@ namespace GEO_Json_to_MySQL_Converter.Models
 
                     //object lastItem = arrayCoordinates.GetValue(arrayCoordinates.Length-1);
 
+                    mesage = new LogNode();
+                    mesage.Date_time = DateTime.Now.ToString();
+                    mesage.Status = $"Количество кординат в строке {stringNomber}, равно {arrayCoordinates.Length}";
+                    Log.Insert(0, mesage);
+
+                    coordinateNomber = 0;
+
                     foreach (var coordinate in arrayCoordinates)
                     {
+                        coordinateNomber++;
+
                         Index = coordinate.IndexOf(",");
                         SqliteCommand command = new SqliteCommand
                         {
@@ -61,10 +79,20 @@ namespace GEO_Json_to_MySQL_Converter.Models
                             $"{coordinate.Substring(Index - 1)})"
                         };
                         int number = command.ExecuteNonQuery();
+
+                        mesage = new LogNode();
+                        mesage.Date_time = DateTime.Now.ToString();
+                        mesage.Status = $"Добавлена в БД кордината номер {coordinateNomber} из {arrayCoordinates.Length}";
+                        Log.Insert(0, mesage);
                     }
 
                     Index = data.IndexOf("]]]]}");
                     data = data.Substring(Index + 5);
+
+                    mesage = new LogNode();
+                    mesage.Date_time = DateTime.Now.ToString();
+                    mesage.Status = $"Обработана строка номер {stringNomber} из {qteStrings}";
+                    Log.Insert(0, mesage);
                 }
 
             }
@@ -91,6 +119,20 @@ namespace GEO_Json_to_MySQL_Converter.Models
                 correctFile = null;
                 return false;
             }
+        }
+
+        static void GetQteStrings (string data, ObservableCollection<LogNode> Log, out int qteStrings)
+        {
+            qteStrings = 0;
+            while (data.IndexOf("Feature") != -1)
+            {
+                qteStrings++;
+                data = data.Substring(data.IndexOf("]]]]}") + 5);
+            }
+            var mesage = new LogNode();
+            mesage.Date_time = DateTime.Now.ToString();
+            mesage.Status = $"Количество строк в файле равно {qteStrings}";
+            Log.Insert(0, mesage);
         }
 
         static void ReadData(string file, out string data)
