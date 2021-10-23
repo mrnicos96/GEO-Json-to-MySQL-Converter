@@ -1,13 +1,12 @@
-﻿using System;
-using System.Windows;
-using System.ComponentModel;
-using System.Collections.ObjectModel;
+﻿using GEO_Json_to_MySQL_Converter.Models;
 using GEO_Json_to_MySQL_Converter.Utils;
-using GEO_Json_to_MySQL_Converter.Models;
+using System;
+using System.Collections.ObjectModel;
+using System.Windows;
 
 namespace GEO_Json_to_MySQL_Converter.ViewModels
 {
-    
+
     public class MainViewModel : BusyViewModel
     {
         private RelayCommand openFileCommand;
@@ -35,7 +34,7 @@ namespace GEO_Json_to_MySQL_Converter.ViewModels
                           {
                               RequestWindows.RequestOpenDB("db files (*.db)|*.db", out pathDB);
                           }
-                          var requestTableName = RequestWindows.RequestInputText("GEO Json to MySQL Converter - Имя таблицы для добавления", 
+                          var requestTableName = RequestWindows.RequestInputText("GEO Json to MySQL Converter - Имя таблицы для добавления",
                               "Введите имя таблицы", "Регионы");
                           if (requestTableName.Item1)
                               return;

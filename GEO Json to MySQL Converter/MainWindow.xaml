@@ -5,8 +5,28 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GEO_Json_to_MySQL_Converter"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="GEO Json to MySQL Converter" Height="450" Width="800">
     <Grid>
-        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Button Content="Файл" Command="OpenFileCommand" Grid.Row="0"/>
+
+        <GroupBox Header="Журнал"  Grid.Row="1">
+            <ListBox    ItemsSource="{Binding Log}">
+                <ListBox.ItemTemplate >
+                    <DataTemplate >
+                        <StackPanel Margin="5" Orientation="Vertical">
+                            <TextBlock Text="Дата события: " />
+                            <TextBlock Text="{Binding Path=Date_time}"/>
+                            <TextBlock Text="Событие: " />
+                            <TextBlock Text="{Binding Path=Status}"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </GroupBox>
+
     </Grid>
 </Window>

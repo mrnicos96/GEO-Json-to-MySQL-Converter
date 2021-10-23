@@ -1,9 +1,9 @@
 ﻿using Microsoft.Data.Sqlite;
+using System;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
-using System;
 
 namespace GEO_Json_to_MySQL_Converter.Models
 {
@@ -121,7 +121,7 @@ namespace GEO_Json_to_MySQL_Converter.Models
             }
         }
 
-        static void GetQteStrings (string data, ObservableCollection<LogNode> Log, out int qteStrings)
+        static void GetQteStrings(string data, ObservableCollection<LogNode> Log, out int qteStrings)
         {
             qteStrings = 0;
             while (data.IndexOf("Feature") != -1)
