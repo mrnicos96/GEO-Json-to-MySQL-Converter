@@ -11,9 +11,9 @@ namespace GEO_Json_to_MySQL_Converter.Models
     {
         public static void DesirialaseFile(string file, string pathDB, string tableName, ObservableCollection<LogNode> Log)
         {
-            if (CheakFile(file, out string correctFile))
-                return;
-            ReadData(correctFile, out string data);
+            //if (!CheakFile(file, out string correctFile))
+            //    return;
+            ReadDataAsync(file, out string data);
 
             GetQteStrings(data, Log, out int qteStrings);
 
@@ -135,17 +135,20 @@ namespace GEO_Json_to_MySQL_Converter.Models
             Log.Insert(0, mesage);
         }
 
-        static void ReadData(string file, out string data)
+        static  Task ReadDataAsync(string file, out string data)
         {
+            var x =Task.Run(()  => ReadData(file));
+            x.Wait();
             do
             {
-                Task.Run(() => Read(file));
+              
+               
             }
-            while (Read(file).Result != null);
-            data = Read(file).Result;
+            while (true);
+            data = "";
         }
 
-        static async Task<string> Read(string file)
+        static async Task<string> ReadData(string file)
         {
             FileStream fs = new FileStream(file, FileMode.OpenOrCreate);
             var rawData = await JsonSerializer.DeserializeAsync<object>(fs);

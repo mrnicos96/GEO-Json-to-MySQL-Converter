@@ -8,10 +8,23 @@
         Title="GEO Json to MySQL Converter" Height="450" Width="800">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Button Content="Файл" Command="OpenFileCommand" Grid.Row="0"/>
+        <Grid Grid.Row="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Button Content="Файл" Command="{Binding Path=OpenFileCommand}" Grid.Row="1" Grid.Column="1"/>
+        </Grid>
+        
 
         <GroupBox Header="Журнал"  Grid.Row="1">
             <ListBox    ItemsSource="{Binding Log}">

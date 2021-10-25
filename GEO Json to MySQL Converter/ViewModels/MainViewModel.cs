@@ -36,7 +36,7 @@ namespace GEO_Json_to_MySQL_Converter.ViewModels
                           }
                           var requestTableName = RequestWindows.RequestInputText("GEO Json to MySQL Converter - Имя таблицы для добавления",
                               "Введите имя таблицы", "Регионы");
-                          if (requestTableName.Item1)
+                          if (!requestTableName.Item1)
                               return;
                           string tableName = requestTableName.Item2;
                           Sirialaser.DesirialaseFile(file, pathDB, tableName, Log);

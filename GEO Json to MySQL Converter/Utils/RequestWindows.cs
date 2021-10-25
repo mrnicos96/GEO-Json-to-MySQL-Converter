@@ -7,7 +7,7 @@ namespace GEO_Json_to_MySQL_Converter.Utils
 {
     public class RequestWindows
     {
-        public static bool RequestFile(out string fileName)
+        public static void  RequestFile(out string fileName)
         {
             var dialog = new Microsoft.Win32.OpenFileDialog { RestoreDirectory = true };
             bool? result = dialog.ShowDialog();
@@ -15,7 +15,8 @@ namespace GEO_Json_to_MySQL_Converter.Utils
                 fileName = dialog.FileName;
             else
                 fileName = String.Empty;
-            return result.Value;
+            dialog = null;
+            result = null;
         }
 
         public static void RequestQuestion(string text, out bool isNewDB)
