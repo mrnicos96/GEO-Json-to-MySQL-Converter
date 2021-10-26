@@ -138,6 +138,7 @@
     <Compile Include="Models\LogModel.cs" />
     <Compile Include="Utils\Sirialaser.cs" />
     <Compile Include="Utils\RequestWindows.cs" />
+    <Compile Include="Utils\Sqlite.cs" />
     <Compile Include="ViewModels\BusyViewModel.cs" />
     <Compile Include="ViewModels\InputTextViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />

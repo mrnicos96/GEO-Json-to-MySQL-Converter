@@ -34,12 +34,10 @@ namespace GEO_Json_to_MySQL_Converter.ViewModels
                           {
                               RequestWindows.RequestOpenDB("db files (*.db)|*.db", out pathDB);
                           }
-                          var requestTableName = RequestWindows.RequestInputText("GEO Json to MySQL Converter - Имя таблицы для добавления",
-                              "Введите имя таблицы", "Регионы");
-                          if (!requestTableName.Item1)
-                              return;
-                          string tableName = requestTableName.Item2;
-                          Sirialaser.DesirialaseFile(file, pathDB, tableName, Log);
+
+                          string tableName = RequestWindows.RequestTableName();
+                          string data = Sirialaser.DesirialaseFile(file);
+                          Sqlite.WriteDataToDB(data, pathDB, tableName, Log);
                       }
                       catch (Exception ex)
                       {

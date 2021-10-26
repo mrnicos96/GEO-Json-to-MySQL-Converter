@@ -15,8 +15,6 @@ namespace GEO_Json_to_MySQL_Converter.Utils
                 fileName = dialog.FileName;
             else
                 fileName = String.Empty;
-            dialog = null;
-            result = null;
         }
 
         public static void RequestQuestion(string text, out bool isNewDB)
@@ -64,6 +62,15 @@ namespace GEO_Json_to_MySQL_Converter.Utils
             }.ShowDialog();
 
             return Tuple.Create(result ?? false, model.InputValue);
+        }
+
+        public static string RequestTableName ()
+        {
+            var requestTableName = RequestInputText("Имя таблицы для добавления",
+                              "Введите имя таблицы", "Регионы");
+            if (!requestTableName.Item1)
+                return "Регионы";
+            return requestTableName.Item2;
         }
     }
 }

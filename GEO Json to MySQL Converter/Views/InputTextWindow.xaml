@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GEO_Json_to_MySQL_Converter.Views"
         mc:Ignorable="d"
-        Title="{Binding Path=Title, Mode=OneWay}" Height="200" Width="250" >
+        Title="{Binding Path=Title, Mode=OneWay}" Height="200" Width="450" >
     <Grid>
         <Grid.RowDefinitions>
         <RowDefinition Height="*" />
@@ -20,9 +20,20 @@
         <TextBox Text="{Binding Path=InputValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                  TextWrapping="Wrap" Grid.Row="1" />
 
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row="2">
-            <Button Content="Принять" IsDefault="True" Click="Apply_Click"/>
-            <Button Content="Отмена" IsCancel="True" />
-        </StackPanel>
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <Button Content="Принять" Grid.Column="1" Grid.Row="1" IsDefault="True" Click="Apply_Click"/>
+        </Grid>
     </Grid>
 </Window>
