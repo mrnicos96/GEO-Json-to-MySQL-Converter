@@ -3,19 +3,28 @@ using GEO_Json_to_MySQL_Converter.Utils;
 using System;
 using System.Collections.ObjectModel;
 using System.Windows;
+using System.Threading;
+using System.Windows.Threading;
+using System.Threading.Tasks;
 
 namespace GEO_Json_to_MySQL_Converter.ViewModels
 {
 
     public class MainViewModel : BusyViewModel
     {
-        private RelayCommand openFileCommand;
-        public ObservableCollection<LogNode> Log { get; set; }
-
-        public MainViewModel()
+        protected Sqlite sqlite = new Sqlite();
+        public RelayCommand openFileCommand;
+        protected string log = String.Empty;
+        public string Log
         {
-            Log = new ObservableCollection<LogNode>();
+            get => log;
+            protected set
+            {
+                log = value;
+                OnPropertyChanged();
+            }
         }
+        public MainViewModel() => Sqlite.NewProgressStatus += AddLog;
 
         public RelayCommand OpenFileCommand => openFileCommand ??
                   (openFileCommand = new RelayCommand((o) =>
@@ -37,7 +46,8 @@ namespace GEO_Json_to_MySQL_Converter.ViewModels
 
                           string tableName = RequestWindows.RequestTableName();
                           string data = Sirialaser.DesirialaseFile(file);
-                          Sqlite.WriteDataToDB(data, pathDB, tableName, Log);
+                          Task.Run(() => AsyncWriteDataToDB(data, pathDB, tableName));
+                          Sqlite.WriteDataToDB(data, pathDB, tableName);
                       }
                       catch (Exception ex)
                       {
@@ -53,5 +63,26 @@ namespace GEO_Json_to_MySQL_Converter.ViewModels
                           OffBusy();
                       }
                   }));
+
+        private void AddLog(string message)
+        {
+            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Normal,
+                (ThreadStart)delegate ()
+                {
+                    if (Log.Length > 0)
+                        log += "\n";
+                    Log += $"{ DateTime.Now.ToString("HH:mm:ss ") } { message }";
+                }
+            );
+        }
+        private async Task AsyncWriteDataToDB(string data, string pathDB, string tableName)
+        {
+            await Task.Run(() =>
+            {
+                Sqlite.WriteDataToDB(data,
+                                     pathDB,
+                                     tableName);
+            });
+        }
     }
 }
