@@ -27,18 +27,9 @@
         
 
         <GroupBox Header="Журнал"  Grid.Row="1">
-            <ListBox    ItemsSource="{Binding Log}">
-                <ListBox.ItemTemplate >
-                    <DataTemplate >
-                        <StackPanel Margin="5" Orientation="Vertical">
-                            <TextBlock Text="Дата события: " />
-                            <TextBlock Text="{Binding Path=Date_time}"/>
-                            <TextBlock Text="Событие: " />
-                            <TextBlock Text="{Binding Path=Status}"/>
-                        </StackPanel>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+            <TextBox Text="{Binding Path=Log, Mode=OneWay}"
+                     VerticalContentAlignment="Stretch" VerticalScrollBarVisibility="Auto"
+                     TextWrapping="Wrap" IsReadOnly="True" />
         </GroupBox>
 
     </Grid>

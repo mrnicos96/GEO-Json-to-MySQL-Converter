@@ -1,19 +1,17 @@
-﻿using GEO_Json_to_MySQL_Converter.Models;
-using Microsoft.Data.Sqlite;
+﻿using Microsoft.Data.Sqlite;
 using System;
-using System.Collections.ObjectModel;
+using System.Threading;
 
 namespace GEO_Json_to_MySQL_Converter.Utils
 {
-   public class Sqlite
+    public class Sqlite
     {
         public delegate void ProgressStatus(string status);
-        public static event ProgressStatus NewProgressStatus;
-        public static void WriteDataToDB(string data, string pathDB, string tableName)
+        public event ProgressStatus NewProgressStatus;
+        public void WriteDataToDB(string data, string pathDB, string tableName)
         {
-            NewProgressStatus.Invoke($"1");
             GetQteStrings(data, out int qteStrings);
-            NewProgressStatus.Invoke($"2");
+            NewProgressStatus.Invoke($"Количество строк в файле равно {qteStrings}");
             using (var connection = new SqliteConnection($@"Data Source={pathDB}"))
             {
                 connection.Open();
@@ -34,7 +32,6 @@ namespace GEO_Json_to_MySQL_Converter.Utils
                 string coordinateString;
                 string[] arrayCoordinates;
                 int stringNomber = 0;
-                int coordinateNomber = 0;
 
                 while (data.IndexOf("Feature") != -1)
                 {
@@ -56,27 +53,21 @@ namespace GEO_Json_to_MySQL_Converter.Utils
                     coordinateString = coordinateString.Replace("],[", "+");
                     arrayCoordinates = coordinateString.Split('+');
 
-                    //object lastItem = arrayCoordinates.GetValue(arrayCoordinates.Length-1);
-
-                    NewProgressStatus.Invoke($"Количество кординат в строке {stringNomber}, равно {arrayCoordinates.Length}");
-
-                    coordinateNomber = 0;
+                    NewProgressStatus.Invoke($"Количество кординат в строке {stringNomber}, равно {arrayCoordinates.Length}. " +
+                        $"Расчетное время обработки строки {stringNomber} составит {Math.Ceiling(((arrayCoordinates.Length) * 0.0080358447377392) / 60)} мин");
+                    Thread.Sleep(100);
 
                     foreach (var coordinate in arrayCoordinates)
                     {
-                        coordinateNomber++;
-
                         Index = coordinate.IndexOf(",");
                         SqliteCommand command = new SqliteCommand
                         {
                             Connection = connection,
                             CommandText = $"INSERT INTO {tableName} (Name, Longitude, Latitude) " +
-                            $"VALUES ('{name}', '{coordinate.Substring(0, Index)}', " +
-                            $"'{coordinate.Substring(Index - 1)}')"
+                            $"VALUES ('{name}', '{coordinate.Substring(Index + 1)}', " +
+                            $"'{coordinate.Substring(0, Index)}')"
                         };
                         int number = command.ExecuteNonQuery();
-
-                        NewProgressStatus.Invoke($"Добавлена в БД кордината номер {coordinateNomber} из {arrayCoordinates.Length}");
                     }
 
                     Index = data.IndexOf("]]]]}");
@@ -106,8 +97,8 @@ namespace GEO_Json_to_MySQL_Converter.Utils
                                 connection.Close();
                                 return true;
 
-                            }    
-                                
+                            }
+
                         }
                         connection.Close();
                         return false;
@@ -118,8 +109,8 @@ namespace GEO_Json_to_MySQL_Converter.Utils
                         connection.Close();
                         return false;
                     }
-                        
-                       
+
+
                 }
             }
         }
@@ -132,7 +123,6 @@ namespace GEO_Json_to_MySQL_Converter.Utils
                 qteStrings++;
                 data = data.Substring(data.IndexOf("]]]]}") + 5);
             }
-            NewProgressStatus.Invoke($"Количество строк в файле равно {qteStrings}");
         }
     }
 

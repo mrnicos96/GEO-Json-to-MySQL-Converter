@@ -1,11 +1,9 @@
-﻿using GEO_Json_to_MySQL_Converter.Models;
-using GEO_Json_to_MySQL_Converter.Utils;
+﻿using GEO_Json_to_MySQL_Converter.Utils;
 using System;
-using System.Collections.ObjectModel;
-using System.Windows;
 using System.Threading;
-using System.Windows.Threading;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Threading;
 
 namespace GEO_Json_to_MySQL_Converter.ViewModels
 {
@@ -24,7 +22,7 @@ namespace GEO_Json_to_MySQL_Converter.ViewModels
                 OnPropertyChanged();
             }
         }
-        public MainViewModel() => Sqlite.NewProgressStatus += AddLog;
+        public MainViewModel() => sqlite.NewProgressStatus += AddLog;
 
         public RelayCommand OpenFileCommand => openFileCommand ??
                   (openFileCommand = new RelayCommand((o) =>
@@ -33,7 +31,7 @@ namespace GEO_Json_to_MySQL_Converter.ViewModels
                       {
                           OnBusy("Waiting ...");
                           RequestWindows.RequestFile(out string file);
-                          RequestWindows.RequestQuestion("Создать новую базу данных для сохранения даных ?", out bool isNewDB);
+                          RequestWindows.RequestQuestion("Создать новую базу данных для сохранения даных?", out bool isNewDB);
                           string pathDB;
                           if (isNewDB)
                           {
@@ -47,7 +45,6 @@ namespace GEO_Json_to_MySQL_Converter.ViewModels
                           string tableName = RequestWindows.RequestTableName();
                           string data = Sirialaser.DesirialaseFile(file);
                           Task.Run(() => AsyncWriteDataToDB(data, pathDB, tableName));
-                          Sqlite.WriteDataToDB(data, pathDB, tableName);
                       }
                       catch (Exception ex)
                       {
@@ -79,10 +76,11 @@ namespace GEO_Json_to_MySQL_Converter.ViewModels
         {
             await Task.Run(() =>
             {
-                Sqlite.WriteDataToDB(data,
+                sqlite.WriteDataToDB(data,
                                      pathDB,
                                      tableName);
             });
+            AddLog("Обработка файла завершена!");
         }
     }
 }
